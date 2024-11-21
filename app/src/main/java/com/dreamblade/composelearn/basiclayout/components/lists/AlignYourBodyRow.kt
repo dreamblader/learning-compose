@@ -14,7 +14,7 @@ import com.dreamblade.composelearn.basiclayout.data.alignYourBodyData
 
 @Composable
 fun AlignYourBodyRow(
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
