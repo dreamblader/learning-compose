@@ -25,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,14 +45,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val windowSizeClass = calculateWindowSizeClass(this)
-            ComposeLearnTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MyApp(window = windowSizeClass,
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            val appState = 1
+
+            when(appState) {
+                0 -> {
+                    ComposeLearnTheme {
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            MyApp(modifier = Modifier.padding(innerPadding))
+                        }
+                    }
+                }
+                1 -> {
+                    val windowSizeClass = calculateWindowSizeClass(this)
+                    MySootheApp(windowSizeClass)
                 }
             }
+
         }
     }
 }
@@ -108,28 +115,18 @@ fun Greetings(modifier: Modifier = Modifier,
 }
 
 @Composable
-fun MyApp(window: WindowSizeClass,modifier: Modifier = Modifier) {
+fun MyApp(modifier: Modifier = Modifier) {
     Surface(
         color = MaterialTheme.colorScheme.background
     ) {
-        val appState = 1
+            var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
-        var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
-
-        when(appState){
-            0 -> {
-                if(shouldShowOnboarding){
-                    OnboardingScreen(onContinueClick = {shouldShowOnboarding = false})
-                } else{
-                    Greetings()
-                }
-            }
-            1 -> {
-                MySootheApp(window)
+            if(shouldShowOnboarding){
+                OnboardingScreen(onContinueClick = {shouldShowOnboarding = false})
+            } else{
+                Greetings()
             }
         }
-
-    }
 }
 
 @Preview(
@@ -150,6 +147,6 @@ fun GreetingPreview() {
 @Composable
 fun MyAppPreview() {
     ComposeLearnTheme {
-        //MyApp(null, Modifier.fillMaxSize())
+        MyApp(Modifier.fillMaxSize())
     }
 }
